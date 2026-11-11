@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f6f5ee">
+    <title>Family Draw</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem('family-draw-theme');
+        document.documentElement.dataset.theme = savedTheme === 'dark' || savedTheme === 'light'
+          ? savedTheme
+          : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      } catch {
+        document.documentElement.dataset.theme = 'light';
+      }
+    </script>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar">
+        <a class="wordmark" href="/" aria-label="Family Draw home">
+          <span class="wordmark-mark" aria-hidden="true">✳</span>
+          <span id="brand-name">Family Draw</span>
+        </a>
+        <div class="topbar-actions">
+          <span class="topbar-note" id="topbar-note">A little luck goes a long way</span>
+          <div class="account-actions" id="account-actions" hidden>
+            <button class="logout-button" id="logout-button" type="button">Sign out</button>
+          </div>
+          <div class="language-picker">
+            <span class="language-flag" id="language-flag" aria-hidden="true">🇺🇸</span>
+            <select class="language-select" id="language-select" aria-label="Choose language">
+              <option value="en">English</option>
+              <option value="de">Deutsch</option>
+              <option value="uk">Українська</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <section class="login-panel" id="login-panel" aria-labelledby="login-title">
+        <div class="login-copy">
+          <p class="eyebrow" id="login-eyebrow">YOUR FAMILY DRAW</p>
+          <h1 id="login-title">Come on in</h1>
+          <p id="login-description">Sign in with your name and personal PIN to continue.</p>
+        </div>
+        <form class="login-form" id="login-form">
+          <label class="items-label" id="login-name-label" for="login-user">Your name</label>
+          <select class="items-control" id="login-user" required>
+            <option value="">Choose your name</option>
+          </select>
+          <p class="items-label" id="login-pin-label">Your PIN</p>
+          <div class="pin-inputs" id="login-pin-inputs" role="group" aria-labelledby="login-pin-label">
+            <input class="items-control pin-digit" type="text" inputmode="numeric" autocomplete="off" maxlength="1" pattern="[0-9]" aria-label="PIN digit 1 of 6" required>
+            <input class="items-control pin-digit" type="text" inputmode="numeric" autocomplete="off" maxlength="1" pattern="[0-9]" aria-label="PIN digit 2 of 6" required>
+            <input class="items-control pin-digit" type="text" inputmode="numeric" autocomplete="off" maxlength="1" pattern="[0-9]" aria-label="PIN digit 3 of 6" required>
+            <input class="items-control pin-digit" type="text" inputmode="numeric" autocomplete="off" maxlength="1" pattern="[0-9]" aria-label="PIN digit 4 of 6" required>
+            <input class="items-control pin-digit" type="text" inputmode="numeric" autocomplete="off" maxlength="1" pattern="[0-9]" aria-label="PIN digit 5 of 6" required>
+            <input class="items-control pin-digit" type="text" inputmode="numeric" autocomplete="off" maxlength="1" pattern="[0-9]" aria-label="PIN digit 6 of 6" required>
+          </div>
+          <p class="status login-status" id="login-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <div class="app-content" id="app-content" hidden>
+        <nav class="view-tabs" role="tablist" aria-label="Page sections" id="view-tabs">
+          <button id="draw-tab" class="view-tab" type="button" role="tab" aria-selected="true" aria-controls="draw-panel">Draw</button>
+          <button id="items-tab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="items-panel">Items</button>
+        </nav>
+
+        <section class="draw-layout" id="draw-panel" role="tabpanel" aria-labelledby="draw-tab" hidden>
+          <div class="intro">
+            <p class="eyebrow" id="eyebrow">ONE TURN EACH</p>
+            <h1 id="page-title">Who’s your<br><span>lucky pick?</span></h1>
+            <p class="draw-user"><span id="draw-user-label">Playing as</span> <strong id="draw-user"></strong></p>
+            <p class="result" id="result" aria-live="polite">Pick your name to get started.</p>
+            <div class="wheel-hint-slot">
+              <p class="wheel-hint" id="wheel-hint" hidden>Tap the wheel to spin.</p>
+            </div>
+            <p class="status" id="status" role="status"></p>
+          </div>
+          <div class="wheel-stage" id="wheel-stage" role="button" tabindex="-1" aria-disabled="true" aria-describedby="wheel-hint" aria-label="Name selection wheel">
+            <div class="wheel-halo" aria-hidden="true"></div>
+            <div class="pointer" aria-hidden="true">
+              <span></span>
+            </div>
+            <div class="wheel-frame">
+              <canvas id="wheel" aria-label="Wheel of names"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <section class="items-panel" id="items-panel" role="tabpanel" aria-labelledby="items-tab" hidden>
+          <div class="items-editor">
+            <p class="eyebrow" id="items-eyebrow">SHARED LISTS</p>
+            <h1 class="items-title" id="items-title">Things we’d like</h1>
+            <p class="items-description" id="items-description">Everyone can read each person’s list. Sign in to change your own.</p>
+            <p class="items-budget-note" id="items-budget-note">The suggested budget is €50. You’re welcome to spend more if you like.</p>
+            <p class="items-owner-note"><span id="items-owner-label">Your list</span> <strong id="items-owner"></strong></p>
+            <label class="items-label" id="items-text-label" for="items-text">Your items, one per line</label>
+            <textarea class="items-control items-textarea" id="items-text" maxlength="10049" rows="5" placeholder="Add one item per line" disabled></textarea>
+            <button class="turn-button items-save" id="items-save" type="button" disabled>
+              <span class="button-icon" aria-hidden="true">↥</span>
+              <span id="items-save-label">Save list</span>
+            </button>
+            <p class="status items-status" id="items-status" role="status" aria-live="polite"></p>
+          </div>
+          <div class="items-board" id="shared-lists" aria-label="Everyone’s item lists"></div>
+        </section>
+      </div>
+
+      <footer class="footer">
+        <span id="footer-left">FAMILY DRAW CLUB</span>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Dark theme" title="Dark theme" aria-pressed="false">
+          <span id="theme-icon" aria-hidden="true">🌙</span>
+        </button>
+      </footer>
+    </main>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
